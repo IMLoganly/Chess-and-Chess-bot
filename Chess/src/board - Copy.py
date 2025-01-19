@@ -44,6 +44,8 @@ class Board:
         #hold last move
         self.lastMove = move
 
+    def validAllMove(self,piece,row,col):
+        return [row,col] in piece.allMoves
 
     def validMove(self,piece,move):
         return move in piece.moves
@@ -55,55 +57,7 @@ class Board:
 
     def castling(self,inital,final):
         return abs(inital.col - final.col) == 2
-    
-    def possibleMoves(self,color):
-        for row in range(ROWS):
-            for col in range(COLS):
-                if self.squares[row][col].hasPiece():
-                    p = self.squares[row][col].piece
-                    if p.color == color:
-                        p.clearMoves()
-                        p.clearAllMoves()
-                        self.calcMoves(p,row,col,bool = True)
 
-                        if p.numberOfMoves() > 0:
-                            return True
-        return False
-
-
-    def findKing(self,game,board):
-        for row in range(ROWS):
-            for col in range(COLS):
-                if board.squares[row][col].hasPiece():
-                    piece = board.squares[row][col].piece
-                    if piece.color == game.currentPlayer and isinstance(piece,King):
-                        return row,col
-                    
-
-    def kingCheck(self,piece,row,col,color):
-        tempCheck = False
-        possibleMoves = [
-                (row-1,col+0), #up
-                (row-1,col+1), #up-right
-                (row+0,col+1), #right
-                (row+1,col+1), #down-right
-                (row+1,col+0), #down
-                (row+1,col-1), #down-left
-                (row+0,col-1), #left
-                (row-1,col-1)] #up-left
-        for m in piece.moves:
-            if self.inCheck(piece,m):
-                tempCheck = False
-        for move in possibleMoves:
-            possibleMoveRow =move[0]
-            possibleMoveCol = move[1]
-            if (possibleMoveRow >= 0 and possibleMoveRow < ROWS) and (possibleMoveCol >=  possibleMoveCol < COLS):
-                if not self.squares[possibleMoveRow][possibleMoveCol].hasTeamPiece(piece.color):
-                    tempCheck = True
-        if self.possibleMoves(color):
-            tempCheck = False
-        return tempCheck
- 
 
     def inCheck(self,piece,move):
         tempPiece = copy.deepcopy(piece)
@@ -127,7 +81,7 @@ class Board:
         '''
         def pawnMoves():
             steps = 1 if piece.moved else 2
-            
+
             #Vertical moves (up:white down:black)
             start = row+piece.dir
             end = row + (piece.dir *(1+steps))
@@ -141,7 +95,7 @@ class Board:
                         
                         #see if move gets put in check
                         if bool:
-                            
+
                             if not self.inCheck(piece,move):
                                 #adds move
                                 piece.add_move(move)
@@ -192,7 +146,6 @@ class Board:
                 (row-1,col-2),
                 (row-2,col-1)
             ]
-            
             for posMove in possibleMoves:
                 possibleMoveRow,possibleMoveCol = posMove
                 if Square.inRange(possibleMoveRow,possibleMoveCol):
@@ -201,14 +154,15 @@ class Board:
                         initial = Square(row,col)
                         finalPiece = self.squares[possibleMoveRow][possibleMoveCol].piece
                         final = Square(possibleMoveRow,possibleMoveCol,finalPiece)
+                        
                         #creates move
                         move = Move(initial,final)
                         
                         #see if move gets put in check
                         if bool:
-                            
+
                             if not self.inCheck(piece,move):
-                                #adds move 
+                                #adds move
                                 piece.add_move(move)
                                 piece.add_allMoves(possibleMoveRow,possibleMoveCol)
                             else: break

@@ -1,16 +1,18 @@
 import pygame
+
 from const import *
 from board import Board
 from dragger import Dragger
+from config import Config
 
 class Game:
     def __init__(self):
+        self.currentPlayer = 'black'
         self.nextPlayer = 'white'
         self.hoveredSQ = None
         self.board = Board()
         self.dragger = Dragger()
-
-        pass
+        self.config = Config()
 
     def showBackground(self,surface):
         for row in range(ROWS):
@@ -66,11 +68,27 @@ class Game:
             color = (180,180,180)
             rect = (self.hoveredSQ.col*SQSIZE,self.hoveredSQ.row*SQSIZE,SQSIZE,SQSIZE)
             pygame.draw.rect(surface,color,rect,width = 5)
+            
     def nextTurn(self):
         self.nextPlayer = 'white' if self.nextPlayer == 'black' else 'black'
+
+        self.currentPlayer = 'black' if self.currentPlayer == 'white' else 'white'
     
     def setHover(self,row,col):
         self.hoveredSQ = self.board.squares[row][col]
+
+    def soundEffect(self, capture = False):
+
+        if capture:
+            self.config.captureSound.play()
+        else:
+            self.config.moveSound.play()
+
+    
+
+
+    def reset(self):
+        self.__init__()
 
 
     

@@ -8,6 +8,7 @@ class Piece:
         value_sign = 1 if color == 'white' else -1
         self.value = value*value_sign
 
+        self.allMoves = []
         self.moves = []
         self.moved = False
         self.texture = texture
@@ -20,12 +21,25 @@ class Piece:
             f'assets/images/imgs-{size}px/{self.color}_{self.name}.png')
        
 
+    def add_allMoves(self,row,col):
+        move = [row,col]
+        self.allMoves.append(move)
+
+    def clearAllMoves(self):
+        self.allMoves = []
+        return self.allMoves
+
     def add_move(self,move):
         self.moves.append(move)
-
+    
+    def numberOfMoves(self):
+        return len(self.moves)
 
     def clearMoves(self):
         self.moves = []
+        return self.moves
+
+
 class Pawn(Piece):
     '''
     class for pawn and its movement
@@ -52,4 +66,6 @@ class Queen(Piece):
     
 class King(Piece):
     def __init__(self, color):
+        self.leftRook = None
+        self.rightRook = None
         super().__init__('king',color,5000)

@@ -40,7 +40,7 @@ class Dragger:
         self.initialRow = pos[1] // SQSIZE
         self.initialCol = pos[0] // SQSIZE
 
-    def dragePiece(self,piece):
+    def dragPiece(self,piece):
         self.piece = piece
         self.dragging = True
 
